@@ -102,6 +102,7 @@ class Renderer {
    * @param {AudioData} audioData 
    */
   render (deltaT, time, audioData) {
+    console.log(audioData.peak);
     this.canvas.context.transform(...this.transform);
 
     if (audioData.peak.value == 1) {

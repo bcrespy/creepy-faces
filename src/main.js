@@ -11,6 +11,8 @@ import AudioSource from "@creenv/audio/source/library";
 import AudioStream from "@creenv/audio/stream";
 import AudioAnalyser from "@creenv/audio/analyser";
 
+import AudioManager from "@creenv/audio/manager";
+
 import Capture from "@creenv/capture";
 
 
@@ -21,16 +23,19 @@ class MyProject extends Creenv {
     super.framerate(30);
 
     this.renderer = new Renderer();
-    this.audioSource = new AudioSource("./angy-kore-do-you-know.mp3");
-    this.audioStream = new AudioStream(this.audioSource);
-    this.analyser = new AudioAnalyser(this.audioStream, {
-      peakDetection: {
-        options: {
-          threshold: 1.4,
-          energyPersistence: 50
+
+    this.manager = new AudioManager(AudioManager.SOURCE_TYPE.FILE, {
+      filepath: "./angy-kore-do-you-know.mp3",
+      analyserOptions: {
+        peakDetection: {
+          options: {
+            threshold: 1.1,
+            energyPersistence: 150
+          }
         }
-      }
-    });
+      },
+      offset: 120 // when to start the music, to be added !
+    }, false);
 
     this.hud = new HUD();
     this.stats = new Stats();
@@ -38,10 +43,9 @@ class MyProject extends Creenv {
     this.hud.add(this.stats);
 
     return new Promise(resolve => {
-      this.audioSource.load().then(() => {
-        this.audioStream.init();
-        this.renderer.init().then(() => {
-          this.audioSource.play(0, 140);
+      this.renderer.init().then(() => {
+        this.manager.init().then(() => {
+          // this.manager.play()
           resolve();
         });
       });
@@ -50,23 +54,24 @@ class MyProject extends Creenv {
 
   render() {
     this.stats.begin();
-    // for the example
-    this.renderer.render(this.deltaT, this.elapsedTime, this.analyser.analyse(this.deltaT, this.elapsedTime));
+    let analysedData = this.manager.getAnalysedAudioData(this.deltaT, this.elapsedTime);
+    this.renderer.render(this.deltaT, this.elapsedTime, analysedData);
     this.stats.end();
   }
 }
 
 let project = new MyProject();
-//project.bootstrap(); 
+project.bootstrap(); 
 
-let capture = new Capture(project, {
+
+/*let capture = new Capture(project, {
   framerate: 30,
   export: {
     type: "webm",
     options: {
       quality: 0.95,
       framerate: 30, 
-      filename: "haloween.webm"
+      filename: "boooo.webm"
     }
   },
-})
+});*/
