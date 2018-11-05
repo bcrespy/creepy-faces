@@ -12,11 +12,10 @@ import config from "./config";
 
 const BLENDING = [
   "source-over",
-  "multiply",
   "screen",
   "hard-light", // creepy as fuck
   "difference", // omg c'est parfait 
-  "luminosity" // b&w
+  //"luminosity" // b&w
 ];
 
 const HARD_BLENDING = [
@@ -68,7 +67,7 @@ class Renderer {
     this.currentSize = new Vector2();
     this.currentPos = new Vector2();
 
-    this.currentMode = "source-over";
+    this.currentMode = "screen";
 
     this.cycle = 0;
 
@@ -107,7 +106,7 @@ class Renderer {
     if (audioData.peak.value == 1) {
       console.log("peak");
       if (this.lastRegisteredEnergy) {
-        if (audioData.peak.energy / this.lastRegisteredEnergy > 3) {
+        if (audioData.peak.energy / this.lastRegisteredEnergy > 1.2) {
           this.hardMode = true;
         }
       }

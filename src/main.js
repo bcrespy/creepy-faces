@@ -10,6 +10,7 @@ import Renderer from './renderer';
 import AudioSource from "@creenv/audio/source/library";
 import AudioStream from "@creenv/audio/stream";
 import AudioAnalyser from "@creenv/audio/analyser";
+import AudioManager from "@creenv/audio/manager";
 
 import Capture from "@creenv/capture";
 
@@ -21,16 +22,17 @@ class MyProject extends Creenv {
     super.framerate(30);
 
     this.renderer = new Renderer();
-    this.audioSource = new AudioSource("./angy-kore-do-you-know.mp3");
-    this.audioStream = new AudioStream(this.audioSource);
-    this.analyser = new AudioAnalyser(this.audioStream, {
-      peakDetection: {
-        options: {
-          threshold: 1.4,
-          energyPersistence: 50
+
+    this.manager = new AudioManager(AudioManager.SOURCE_TYPE.FILE, {
+      filepath: "angy-kore-do-you-know.mp3",
+      analyser: {
+        peakDetection: {
+          options: {
+            threshold: 1.05
+          }
         }
       }
-    });
+    }, true);
 
     this.hud = new HUD();
     this.stats = new Stats();
@@ -38,10 +40,8 @@ class MyProject extends Creenv {
     this.hud.add(this.stats);
 
     return new Promise(resolve => {
-      this.audioSource.load().then(() => {
-        this.audioStream.init();
+      this.manager.init().then(() => {
         this.renderer.init().then(() => {
-          this.audioSource.play(0, 140);
           resolve();
         });
       });
@@ -51,7 +51,8 @@ class MyProject extends Creenv {
   render() {
     this.stats.begin();
     // for the example
-    this.renderer.render(this.deltaT, this.elapsedTime, this.analyser.analyse(this.deltaT, this.elapsedTime));
+    console.log(this.elapsedTime);
+    this.renderer.render(this.deltaT, this.elapsedTime, this.manager.getAnalysedAudioData(this.deltaT, this.elapsedTime+138000));
     this.stats.end();
   }
 }
@@ -59,14 +60,15 @@ class MyProject extends Creenv {
 let project = new MyProject();
 //project.bootstrap(); 
 
+
 let capture = new Capture(project, {
   framerate: 30,
   export: {
-    type: "webm",
+    type: "png-sequence",
     options: {
       quality: 0.95,
       framerate: 30, 
-      filename: "haloween.webm"
+      filename: "sequence.zip"
     }
   },
-})
+});
