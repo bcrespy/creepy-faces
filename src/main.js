@@ -12,6 +12,8 @@ import AudioStream from "@creenv/audio/stream";
 import AudioAnalyser from "@creenv/audio/analyser";
 import AudioManager from "@creenv/audio/manager";
 
+import AudioManager from "@creenv/audio/manager";
+
 import Capture from "@creenv/capture";
 
 
@@ -24,6 +26,7 @@ class MyProject extends Creenv {
     this.renderer = new Renderer();
 
     this.manager = new AudioManager(AudioManager.SOURCE_TYPE.FILE, {
+<<<<<<< HEAD
       filepath: "angy-kore-do-you-know.mp3",
       analyser: {
         peakDetection: {
@@ -33,6 +36,19 @@ class MyProject extends Creenv {
         }
       }
     }, true);
+=======
+      filepath: "./angy-kore-do-you-know.mp3",
+      analyserOptions: {
+        peakDetection: {
+          options: {
+            threshold: 1.1,
+            energyPersistence: 150
+          }
+        }
+      },
+      offset: 120 // when to start the music, to be added !
+    }, false);
+>>>>>>> 52d6d69f1244280f9e54fc7365e21954be93bfb1
 
     this.hud = new HUD();
     this.stats = new Stats();
@@ -40,8 +56,14 @@ class MyProject extends Creenv {
     this.hud.add(this.stats);
 
     return new Promise(resolve => {
+<<<<<<< HEAD
       this.manager.init().then(() => {
         this.renderer.init().then(() => {
+=======
+      this.renderer.init().then(() => {
+        this.manager.init().then(() => {
+          // this.manager.play()
+>>>>>>> 52d6d69f1244280f9e54fc7365e21954be93bfb1
           resolve();
         });
       });
@@ -50,25 +72,42 @@ class MyProject extends Creenv {
 
   render() {
     this.stats.begin();
+<<<<<<< HEAD
     // for the example
     console.log(this.elapsedTime);
     this.renderer.render(this.deltaT, this.elapsedTime, this.manager.getAnalysedAudioData(this.deltaT, this.elapsedTime+138000));
+=======
+    let analysedData = this.manager.getAnalysedAudioData(this.deltaT, this.elapsedTime);
+    this.renderer.render(this.deltaT, this.elapsedTime, analysedData);
+>>>>>>> 52d6d69f1244280f9e54fc7365e21954be93bfb1
     this.stats.end();
   }
 }
 
 let project = new MyProject();
-//project.bootstrap(); 
+project.bootstrap(); 
 
+
+<<<<<<< HEAD
 
 let capture = new Capture(project, {
+=======
+/*let capture = new Capture(project, {
+>>>>>>> 52d6d69f1244280f9e54fc7365e21954be93bfb1
   framerate: 30,
   export: {
     type: "png-sequence",
     options: {
       quality: 0.95,
       framerate: 30, 
+<<<<<<< HEAD
       filename: "sequence.zip"
     }
   },
 });
+=======
+      filename: "boooo.webm"
+    }
+  },
+});*/
+>>>>>>> 52d6d69f1244280f9e54fc7365e21954be93bfb1
